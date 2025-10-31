@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Animated Weather App 🌈</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #74b9ff, #81ecec, #fab1a0);
+      background-size: 300% 300%;
+      animation: gradientShift 8s ease infinite;
+      color: #2d3436;
+      overflow: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      width: 370px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      color: #2d3436;
+      font-weight: 600;
+    }
+
+    .input-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #74b9ff;
+      border-radius: 10px;
+      outline: none;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #00cec9;
+      box-shadow: 0 0 10px rgba(0, 206, 201, 0.4);
+    }
+
+    button {
+      background: linear-gradient(90deg, #00cec9, #74b9ff, #55efc4);
+      border: none;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      background-size: 200% auto;
+    }
+
+    button:hover {
+      background-position: right center;
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(0, 206, 201, 0.6);
+    }
+
+    .weather-box {
+      background: linear-gradient(135deg, #81ecec, #74b9ff);
+      border-radius: 15px;
+      padding: 15px;
+      transition: all 0.4s ease;
+    }
+
+    .city {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .temp {
+      font-size: 42px;
+      font-weight: bold;
+      color: #0984e3;
+      margin-top: 5px;
+    }
+
+    .icon {
+      width: 90px;
+      height: 90px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    p {
+      margin-top: 8px;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .error {
+      color: #d63031;
+      font-weight: bold;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* 🌧️ Rain Animation */
+    .rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(rgba(255,255,255,0.3) 1px, transparent 1px);
+      background-size: 2px 100px;
+      animation: rainMove 0.5s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes rainMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100px; }
+    }
+
+    /* ❄️ Snow Animation */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1.2em;
+      animation: fall 10s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ☁️ Cloud Animation */
+    .clouds {
+      position: fixed;
+      top: 50px;
+      left: 0;
+      width: 100%;
+      height: 200px;
+      background: url('https://i.imgur.com/MR2qQ8Z.png');
+      background-repeat: repeat-x;
+      background-size: contain;
+      animation: moveClouds 60s linear infinite;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    @keyframes moveClouds {
+      from { background-position-x: 0; }
+      to { background-position-x: 1000px; }
+    }
+
+    /* ☀️ Sunny glow */
+    .sunny {
+      position: fixed;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #ffeaa7 30%, rgba(255, 204, 0, 0) 70%);
+      animation: pulseSun 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulseSun {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.1); opacity: 1; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌈 Animated Weather App</h1>
+    <div class="input-box">
+      <input type="text" id="locationInput" placeholder="Enter city..." />
+      <button id="searchBtn">Search</button>
+    </div>
+    <div id="weatherResult" class="weather-box">
+      <p>☀️ Type a city name to get weather updates!</p>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = "f29ce920eca441d586b212708252910";
+    const cacheTime = 5 * 60 * 1000; // 5 min cache
+    const cooldown = 3000; // 3 sec cooldown
+    let lastCall = 0;
+
+    document.getElementById("searchBtn").addEventListener("click", getWeather);
+
+    async function getWeather() {
+      const now = Date.now();
+      const city = document.getElementById("locationInput").value.trim();
+      if (!city) return showMessage("❗ Please enter a city name.");
+      if (now - lastCall < cooldown) return showMessage("⏳ Please wait a few seconds...");
+      lastCall = now;
+
+      const cached = JSON.parse(localStorage.getItem(city));
+      if (cached && now - cached.time < cacheTime) {
+        displayWeather(cached.data);
+        return;
+      }
+
+      try {
+        showMessage("Fetching data... ☁️");
+        const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=yes`);
+        if (!response.ok) throw new Error("City not found ❌");
+        const data = await response.json();
+        localStorage.setItem(city, JSON.stringify({ data, time: now }));
+        displayWeather(data);
+      } catch (err) {
+        showMessage(err.message);
+      }
+    }
+
+    function displayWeather(data) {
+      const resultBox = document.getElementById("weatherResult");
+      const { name, country } = data.location;
+      const { temp_c, condition } = data.current;
+      const text = condition.text.toLowerCase();
+
+      resultBox.innerHTML = `
+        <div class="city">${name}, ${country}</div>
+        <img src="${getIcon(text)}" class="icon" alt="Weather">
+        <div class="temp">${temp_c}°C</div>
+        <p>${condition.text}</p>
+      `;
+
+      setWeatherAnimation(text);
+    }
+
+    function getIcon(condition) {
+      if (condition.includes("rain")) return "https://cdn-icons-png.flaticon.com/512/4150/4150897.png";
+      if (condition.includes("sun") || condition.includes("clear")) return "https://cdn-icons-png.flaticon.com/512/869/869869.png";
+      if (condition.includes("cloud")) return "https://cdn-icons-png.flaticon.com/512/414/414825.png";
+      if (condition.includes("snow")) return "https://cdn-icons-png.flaticon.com/512/2315/2315309.png";
+      if (condition.includes("storm")) return "https://cdn-icons-png.flaticon.com/512/1779/1779940.png";
+      return "https://cdn-icons-png.flaticon.com/512/1163/1163624.png";
+    }
+
+    function showMessage(msg) {
+      document.getElementById("weatherResult").innerHTML = `<p class="error">${msg}</p>`;
+      clearWeatherAnimations();
+    }
+
+    // 🌦️ Animated Backgrounds
+    function setWeatherAnimation(condition) {
+      clearWeatherAnimations();
+      if (condition.includes("rain")) createRain();
+      else if (condition.includes("snow")) createSnow();
+      else if (condition.includes("cloud")) createClouds();
+      else if (condition.includes("sun") || condition.includes("clear")) createSun();
+    }
+
+    function clearWeatherAnimations() {
+      document.querySelectorAll(".rain, .snowflake, .clouds, .sunny").forEach(e => e.remove());
+    }
+
+    function createRain() {
+      const rain = document.createElement("div");
+      rain.classList.add("rain");
+      document.body.appendChild(rain);
+    }
+
+    function createSnow() {
+      for (let i = 0; i < 15; i++) {
+        const snowflake = document.createElement("div");
+        snowflake.classList.add("snowflake");
+        snowflake.textContent = "❄️";
+        snowflake.style.left = Math.random() * 100 + "vw";
+        snowflake.style.animationDuration = 5 + Math.random() * 5 + "s";
+        snowflake.style.fontSize = 16 + Math.random() * 10 + "px";
+        document.body.appendChild(snowflake);
+      }
+    }
+
+    function createClouds() {
+      const clouds = document.createElement("div");
+      clouds.classList.add("clouds");
+      document.body.appendChild(clouds);
+    }
+
+    function createSun() {
+      const sun = document.createElement("div");
+      sun.classList.add("sunny");
+      document.body.appendChild(sun);
+    }
+  </script>
+</body>
+</html>
